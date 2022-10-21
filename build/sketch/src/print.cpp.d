@@ -1,5 +1,5 @@
-/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/sketch/src/print.cpp.o: \
- /Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/sketch/src/print.cpp \
+/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/sketch/src/print.cpp.o: \
+ /Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/sketch/src/print.cpp \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Arduino.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/newlib/stdint.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/newlib/machine/_default_types.h \
@@ -131,4 +131,4 @@
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/spi_flash/esp_partition.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/spi_flash/esp_spi_flash.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/variants/esp32/pins_arduino.h \
- /Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/sketch/src/print.h
+ /Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/sketch/src/print.h

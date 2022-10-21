@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#line 1 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino"
+#line 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino"
 #include <SPI.h>
 #include <Ethernet.h>
 #include "./src/print.h"
@@ -19,11 +19,11 @@ unsigned long beginMicros, endMicros;
 unsigned long byteCount = 0;
 bool printWebData = true;  // set to false for better speed measurement
 char webpage[]="GET /about HTTP/1.1";
-#line 20 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino"
+#line 20 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino"
 void setup();
-#line 71 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino"
+#line 71 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino"
 void loop();
-#line 20 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino"
+#line 20 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino"
 void setup() {
   Ethernet.init(5);   // MKR ETH Shield
 

@@ -1,4 +1,4 @@
-/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/libraries/Ethernet/utility/w5100.cpp.o: \
+/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/libraries/Ethernet/utility/w5100.cpp.o: \
  /Users/jeremyyuan/Documents/Arduino/libraries/Ethernet/src/utility/w5100.cpp \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Arduino.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/newlib/stdint.h \

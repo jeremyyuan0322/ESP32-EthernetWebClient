@@ -1,4 +1,4 @@
-/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/core/esp32-hal-timer.c.o: \
+/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/core/esp32-hal-timer.c.o: \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/esp32-hal-timer.c \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/esp32-hal-timer.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/esp32-hal.h \

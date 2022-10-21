@@ -1,4 +1,4 @@
-/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/core/wiring_shift.c.o: \
+/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/core/wiring_shift.c.o: \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/wiring_shift.c \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/esp32-hal.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/newlib/stdint.h \

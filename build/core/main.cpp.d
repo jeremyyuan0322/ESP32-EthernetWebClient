@@ -1,4 +1,4 @@
-/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/build/core/main.cpp.o: \
+/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/build/core/main.cpp.o: \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/main.cpp \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/freertos/freertos/FreeRTOS.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/newlib/sys/reent.h \

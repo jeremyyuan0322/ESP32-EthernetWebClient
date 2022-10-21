@@ -1,7 +1,7 @@
-# 1 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino"
-# 2 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino" 2
-# 3 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino" 2
-# 4 "/Users/jeremyyuan/Documents/Vscode/ESP32/ethernet/ethWebClient.ino" 2
+# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino"
+# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino" 2
+# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino" 2
+# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino" 2
 byte mac[] = { 0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4 };//98:f4:ab:17:24:c4
 
 IPAddress server(192,168,1,55); // numeric IP for Google (no DNS)
