@@ -1,27 +1,25 @@
-#include <Dhcp.h>
-#include <Dns.h>
+
 #include <Ethernet.h>
-#include <EthernetClient.h>
-#include <EthernetServer.h>
-#include <EthernetUdp.h>
-
 #include "./src/print.h"
-//MAC: 98:f4:ab:17:24:c4
+// MAC: 98:f4:ab:17:24:c4
+int idx = 0;
+char buf[32];
 char ch;
-void setup() {
+void setup()
+{
   Serial.begin(115200);
-  pinMode(33,OUTPUT);//232RX
-  pinMode(32,INPUT);//232TX
+  pinMode(33, OUTPUT); // 232RX
+  pinMode(32, INPUT);  // 232TX
   Serial.println("enter one string:");
-
 }
 
-void loop() {
-    printstr();
+void loop()
+{
+  printstr();
 }
 
 //板子先連上socket server
-//serial鍵盤輸入 丟到socket server(成功收到有提示)
-//socket server再把收到的東西吐回來print在serial monitor上
-//socket.emit() 可以將訊息推播到伺服器（node）
+// serial鍵盤輸入 丟到socket server(成功收到有提示)
+// socket server再把收到的東西吐回來print在serial monitor上
+// socket.emit() 可以將訊息推播到伺服器（node）
 //

@@ -1,10 +1,11 @@
-# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino"
-# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethWebClient.ino" 2
-byte mac[] = { 0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4 };//98:f4:ab:17:24:c4
-
-IPAddress server(192,168,1,55); // numeric IP for Google (no DNS)
+# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino"
+# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino" 2
+# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino" 2
+# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino" 2
+// #include "./src/print.h"
+char string[32];
+byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // 98:f4:ab:17:24:c4
+IPAddress server(192, 168, 1, 55); // numeric IP for Google (no DNS)
 
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192, 168, 1, 55);
@@ -16,33 +17,73 @@ EthernetClient client;
 unsigned long beginMicros, endMicros;
 unsigned long byteCount = 0;
 bool printWebData = true; // set to false for better speed measurement
-char webpage[]="GET /about HTTP/1.1";
-void setup() {
+char httpCommandF[] = "GET /";
+char httpCommandS[] = " HTTP/1.1";
+char webpage[30], prewebpage[30];
+char server1[]="about\0";
+char server2[]="about\0";
+// char chNull
+void printstr()
+{
+  while (!Serial.available())
+  {
+  }
+
+  int availableBytes = Serial.available();
+  for (int i = 0; i < availableBytes; i++)
+  {
+    string[i] = Serial.read();
+    // string[i + 1] = '\0'; // Append a null
+  }
+  Serial.print(string);
+  if (strcmp(server1, string) == 0 || strcmp(server2, string) == 0)
+  {
+    strcat(webpage, httpCommandF);
+    strcat(webpage, string);
+    strcat(webpage, httpCommandS); //"GET /about HTTP/1.1"
+    Serial.print("webpage: ");//GET /jeremy HTTP/1.1
+    Serial.println(webpage);
+    // client.println("GET /about HTTP/1.1");
+    client.println(webpage);
+    client.println("Host: 192.168.1.55");
+    client.println("Connection: close");
+    client.println();
+
+  }
+}
+void setup()
+{
+  Serial.begin(115200);
+  pinMode(33, 0x02); // 232RX
+  pinMode(32, 0x01); // 232TX
   Ethernet.init(5); // MKR ETH Shield
 
-  // Open serial communications and wait for port to open:
-  Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
+  // printstr();
+  // Serial.println(string);
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin(mac) == 0) {
+  if (Ethernet.begin(mac) == 0)
+  {
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
-    if (Ethernet.hardwareStatus() == EthernetNoHardware) {
+    if (Ethernet.hardwareStatus() == EthernetNoHardware)
+    {
       Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
-      while (true) {
+      while (true)
+      {
         delay(1); // do nothing, no point running without Ethernet hardware
       }
     }
-    if (Ethernet.linkStatus() == LinkOFF) {
+    if (Ethernet.linkStatus() == LinkOFF)
+    {
       Serial.println("Ethernet cable is not connected.");
     }
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, ip, myDns);
-  } else {
+  }
+  else
+  {
     Serial.print("  DHCP assigned IP ");
     Serial.println(Ethernet.localIP());
   }
@@ -53,55 +94,33 @@ void setup() {
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 3000)) {
+  if (client.connect(server, 3000) == 1)
+  {
     Serial.print("connected to ");
     Serial.println(client.remoteIP());
-    // Make a HTTP request:
-    client.println(webpage);
-    client.println("Host: 192.168.1.55");
-    client.println("Connection: close");
-    client.println();
-  } else {
+  }
+  else
+  {
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-  beginMicros = micros();
 }
 
-void loop() {
-  // if there are incoming bytes available
-  // from the server, read them and print them:
+void loop()
+{
+  printstr();
   int len = client.available();
-  if (len > 0) {
-    byte buffer[80];
-    if (len > 80) len = 80;
+  if (len > 0)
+  {
+    byte buffer[100];
+    if (len > 100)
+      len = 100;
     client.read(buffer, len);
-    if (printWebData) {
+    if (printWebData)
+    {
+      Serial.println("return:");
       Serial.write(buffer, len); // show in the serial monitor (slows some boards)
     }
     byteCount = byteCount + len;
   }
-
-  // // if the server's disconnected, stop the client:
-  // if (!client.connected()) {
-  //   endMicros = micros();
-  //   Serial.println();
-  //   Serial.println("disconnecting.");
-  //   client.stop();
-  //   Serial.print("Received ");
-  //   Serial.print(byteCount);
-  //   Serial.print(" bytes in ");
-  //   float seconds = (float)(endMicros - beginMicros) / 1000000.0;
-  //   Serial.print(seconds, 4);
-  //   float rate = (float)byteCount / seconds / 1000.0;
-  //   Serial.print(", rate = ");
-  //   Serial.print(rate);
-  //   Serial.print(" kbytes/second");
-  //   Serial.println();
-
-  //   // do nothing forevermore:
-  //   while (true) {
-  //     delay(1);
-  //   }
-  // }
 }
