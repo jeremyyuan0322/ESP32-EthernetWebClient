@@ -27,7 +27,7 @@ EthernetServer server(80);的server有error（如圖）
 + 解決方法: https://github.com/khoih-prog/EthernetWebServer_SSL#7-for-fixing-esp32-compile-error
 (github上的解法，如圖)
 ![Alt text](/img/ServerCompileError/Solution_1.png)
-+ 將他提供的server.h取代原本的server.h
++ 將他提供的server.h(如圖)取代原本的server.h
 ![Alt text](/img/ServerCompileError/Solution_File.png)
 + server.h新(左)舊(右)比較
 ![Alt text](/img/ServerCompileError/Overwrite.png)

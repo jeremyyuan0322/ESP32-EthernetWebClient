@@ -8,5 +8,5 @@
   "hardwareFolders": "/Applications/Arduino.app/Contents/Java/hardware,/Users/jeremyyuan/Library/Arduino15/packages",
   "otherLibrariesFolders": "/Users/jeremyyuan/Documents/Arduino/libraries",
   "runtime.ide.version": "10819",
-  "sketchLocation": "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino"
+  "sketchLocation": "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
 }

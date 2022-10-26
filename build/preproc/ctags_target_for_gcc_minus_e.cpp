@@ -1,15 +1,10 @@
-# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino"
-# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/abc.ino" 2
+# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
+# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
+# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
+# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
 // #include "./src/print.h"
-char string[32];
-byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // 98:f4:ab:17:24:c4
-IPAddress server(192, 168, 1, 55); // numeric IP for Google (no DNS)
-
-// Set the static IP address to use if the DHCP fails to assign
-IPAddress ip(192, 168, 1, 55);
-IPAddress myDns(192, 168, 1, 1);
+byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
+IPAddress server(192, 168, 1, 56); //目標server的ip
 
 EthernetClient client;
 
@@ -17,39 +12,98 @@ EthernetClient client;
 unsigned long beginMicros, endMicros;
 unsigned long byteCount = 0;
 bool printWebData = true; // set to false for better speed measurement
-char httpCommandF[] = "GET /";
-char httpCommandS[] = " HTTP/1.1";
-char webpage[30], prewebpage[30];
-char server1[]="about\0";
-char server2[]="about\0";
-// char chNull
+String httpCommandF = "GET ";
+String httpCommandS = " HTTP/1.1";
+String webpage; // http command
+String server1 = "/about";
+String server2 = "/name";
+String server3 = "/";
+String disconnect = "/end";
+String reConnect = "/reconnect";
+String serialIn;
+int serialLen;
+void checkConnect();
+void disConnectClient();
+void printstr();
+
+void checkConnect()
+{
+  // Serial.println(client.connected());
+  if (client.connected() == 0)
+  {
+    client.connect(server, 3000);
+  }
+  else
+  {
+    Serial.println("connected!!");
+  }
+}
+void disConnectClient()
+{
+  Serial.println();
+  client.stop();
+  Serial.println("disconnect.");
+
+  Serial.println(client.connected());
+  while (true)
+  {
+    Serial.println("enter \"/reconnect\" to connect server");
+    while (!Serial.available())
+    {
+    }
+    serialIn = Serial.readString();
+    serialIn.remove(serialIn.length() - 1, 1);
+    if (serialIn.compareTo(reConnect) == 0)
+    {
+      serialIn = "";
+      Serial.println("reconnected!!");
+      // printstr();
+      break;
+    }
+  }
+}
 void printstr()
 {
+  checkConnect();
+  Serial.println("enter a string");
   while (!Serial.available())
   {
   }
+  // int availableBytes = Serial.available();
+  serialIn = Serial.readString();
+  serialIn.remove(serialIn.length() - 1, 1);
+  serialLen = serialIn.length();
+  Serial.println(serialLen);
 
-  int availableBytes = Serial.available();
-  for (int i = 0; i < availableBytes; i++)
-  {
-    string[i] = Serial.read();
-    // string[i + 1] = '\0'; // Append a null
-  }
-  Serial.print(string);
-  if (strcmp(server1, string) == 0 || strcmp(server2, string) == 0)
-  {
-    strcat(webpage, httpCommandF);
-    strcat(webpage, string);
-    strcat(webpage, httpCommandS); //"GET /about HTTP/1.1"
-    Serial.print("webpage: ");//GET /jeremy HTTP/1.1
-    Serial.println(webpage);
-    // client.println("GET /about HTTP/1.1");
+  Serial.print("serialIn: ");
+  Serial.println(serialIn);
+  if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
+  { // command found
+    webpage.concat(httpCommandF);
+    webpage.concat(serialIn);
+    webpage.concat(httpCommandS);
+
+    Serial.println("webpage: "); // GET /jeremy HTTP/1.1
+    Serial.println(webpage); // GET /about HTTP/1.1
     client.println(webpage);
-    client.println("Host: 192.168.1.55");
+    webpage = "";
+    client.println("Host: 192.168.1.56");
     client.println("Connection: close");
     client.println();
-
+    Serial.println("please wait!");
   }
+  else if (serialIn.compareTo(disconnect) == 0)
+  {
+    disConnectClient();
+    printstr();
+  }
+  else
+  { // command not found
+    Serial.println("command not found");
+    serialIn = "";
+    printstr();
+  }
+  serialIn = "";
 }
 void setup()
 {
@@ -57,9 +111,6 @@ void setup()
   pinMode(33, 0x02); // 232RX
   pinMode(32, 0x01); // 232TX
   Ethernet.init(5); // MKR ETH Shield
-
-  // printstr();
-  // Serial.println(string);
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
@@ -80,7 +131,7 @@ void setup()
       Serial.println("Ethernet cable is not connected.");
     }
     // try to configure using IP address instead of DHCP:
-    Ethernet.begin(mac, ip, myDns);
+    Ethernet.begin(mac); //板子連網DHCP
   }
   else
   {
@@ -94,7 +145,7 @@ void setup()
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 3000) == 1)
+  if (client.connect(server, 3000) == 1) //板子連上server
   {
     Serial.print("connected to ");
     Serial.println(client.remoteIP());
@@ -104,23 +155,32 @@ void setup()
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
+  printstr();
 }
 
 void loop()
 {
-  printstr();
-  int len = client.available();
-  if (len > 0)
+  if (!Serial.available()) // serial沒東西
   {
-    byte buffer[100];
-    if (len > 100)
-      len = 100;
-    client.read(buffer, len);
-    if (printWebData)
+    while (!client.available()) //等待server回覆
     {
-      Serial.println("return:");
-      Serial.write(buffer, len); // show in the serial monitor (slows some boards)
     }
-    byteCount = byteCount + len;
+    int len = client.available();
+    if (len > 0)
+    {
+      byte buffer[30];
+      if (len > 30)
+        len = 30;
+      client.read(buffer, len);
+      if (printWebData)
+      {
+        Serial.write(buffer, len); // show in the serial monitor (slows some boards)
+      }
+    }
+    Serial.println("");
+  }
+  if (client.available() == 0 && Serial.available() >= 0)
+  {
+    printstr(); //等serial輸入
   }
 }

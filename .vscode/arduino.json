@@ -1,7 +1,7 @@
 {
     "configuration": "PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=115200,DebugLevel=none",
     "board": "esp32:esp32:esp32",
-    "sketch": "abc.ino",
+    "sketch": "ethernet.ino",
     "output": "build",
-    "port": "/dev/tty.usbserial-14120"
+    "port": "/dev/tty.usbserial-14110"
 }
