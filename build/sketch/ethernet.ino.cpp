@@ -6,6 +6,8 @@
 // #include "./src/print.h"
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
 IPAddress server(192, 168, 1, 56);                 //目標server的ip
+IPAddress ip(192, 168, 0, 74);
+IPAddress myDns(192, 168, 0, 1);
 
 EthernetClient client;
 
@@ -27,11 +29,11 @@ void checkConnect();
 void disConnectClient();
 void printstr();
 
-#line 107 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
+#line 111 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
 void setup();
-#line 160 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
+#line 165 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
 void loop();
-#line 28 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
+#line 30 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
 void checkConnect()
 {
   // Serial.println(client.connected());
@@ -41,6 +43,8 @@ void checkConnect()
   }
   else
   {
+    Serial.println("");
+    Serial.println("");
     Serial.println("connected!!");
   }
 }
@@ -63,40 +67,40 @@ void disConnectClient()
     {
       serialIn = "";
       Serial.println("reconnected!!");
-      // printstr();
       break;
     }
   }
 }
 void printstr()
 {
-  checkConnect();
+  checkConnect();//若server斷線則重連
+  Serial.println("");
   Serial.println("enter a string");
   while (!Serial.available())
   {
   }
-  // int availableBytes = Serial.available();
   serialIn = Serial.readString();
-  serialIn.remove(serialIn.length() - 1, 1);
-  serialLen = serialIn.length();
-  Serial.println(serialLen);
+  serialIn.remove(serialIn.length() - 1, 1);//刪掉換行字元
+  // serialLen = serialIn.length();
+  // Serial.println(serialLen);
 
-  Serial.print("serialIn: ");
-  Serial.println(serialIn);
+  // Serial.print("serialIn: ");
+  // Serial.println(serialIn);
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
   { // command found
     webpage.concat(httpCommandF);
     webpage.concat(serialIn);
     webpage.concat(httpCommandS);
 
-    Serial.println("webpage: "); // GET /jeremy HTTP/1.1
+    Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
     Serial.println(webpage);     // GET /about HTTP/1.1
+    Serial.println("");
     client.println(webpage);
     webpage = "";
     client.println("Host: 192.168.1.56");
     client.println("Connection: close");
     client.println();
-    Serial.println("please wait!");
+    // Serial.println("please wait!");
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
@@ -120,7 +124,7 @@ void setup()
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin(mac) == 0)
+  if (Ethernet.begin(mac) == 0)//板子嘗試用DHCP連網
   {
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
@@ -137,10 +141,10 @@ void setup()
       Serial.println("Ethernet cable is not connected.");
     }
     // try to configure using IP address instead of DHCP:
-    Ethernet.begin(mac); //板子連網DHCP
+    Ethernet.begin(mac, ip, myDns);
   }
   else
-  {
+  {//板子成功用DHCP連上網
     Serial.print("  DHCP assigned IP ");
     Serial.println(Ethernet.localIP());
   }
@@ -151,8 +155,9 @@ void setup()
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 3000) == 1) //板子連上server
+  if (client.connect(server, 3000) == 1) 
   {
+    //板子連上server
     Serial.print("connected to ");
     Serial.println(client.remoteIP());
   }
@@ -168,26 +173,29 @@ void loop()
 {
   if (!Serial.available()) // serial沒東西
   {
+    
     while (!client.available()) //等待server回覆
     {
     }
+    
     int len = client.available();
     if (len > 0)
     {
-      byte buffer[30];
-      if (len > 30)
-        len = 30;
+      byte buffer[80];
+      if (len > 80)
+        len = 80;
       client.read(buffer, len);
       if (printWebData)
       {
         Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       }
     }
-    Serial.println("");
+    // Serial.println("");
   }
   if (client.available() == 0 && Serial.available() >= 0)
   {
-    printstr(); //等serial輸入
+    //server丟完了 且 Serial有東西輸入
+    printstr(); //serial輸入
   }
 }
 

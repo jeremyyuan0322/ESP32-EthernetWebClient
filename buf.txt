@@ -1,10 +1,9 @@
-# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
-# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
+#include <SPI.h>
+#include <Ethernet.h>
+#include <string.h>
 // #include "./src/print.h"
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
-IPAddress server(192, 168, 1, 56); //目標server的ip
+IPAddress server(192, 168, 1, 56);                 //目標server的ip
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
 
@@ -37,8 +36,6 @@ void checkConnect()
   }
   else
   {
-    Serial.println("");
-    Serial.println("");
     Serial.println("connected!!");
   }
 }
@@ -47,7 +44,7 @@ void disConnectClient()
   Serial.println();
   client.stop();
   Serial.println("disconnect.");
-
+  
   Serial.println(client.connected());
   while (true)
   {
@@ -68,33 +65,31 @@ void disConnectClient()
 void printstr()
 {
   checkConnect();//若server斷線則重連
-  Serial.println("");
   Serial.println("enter a string");
   while (!Serial.available())
   {
   }
   serialIn = Serial.readString();
-  serialIn.remove(serialIn.length() - 1, 1);//刪掉換行字元
-  // serialLen = serialIn.length();
-  // Serial.println(serialLen);
+  serialIn.remove(serialIn.length() - 1, 1);
+  serialLen = serialIn.length();
+  Serial.println(serialLen);
 
-  // Serial.print("serialIn: ");
-  // Serial.println(serialIn);
+  Serial.print("serialIn: ");
+  Serial.println(serialIn);
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
   { // command found
     webpage.concat(httpCommandF);
     webpage.concat(serialIn);
     webpage.concat(httpCommandS);
 
-    Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-    Serial.println(webpage); // GET /about HTTP/1.1
-    Serial.println("");
+    Serial.println("webpage: "); // GET /jeremy HTTP/1.1
+    Serial.println(webpage);     // GET /about HTTP/1.1
     client.println(webpage);
     webpage = "";
     client.println("Host: 192.168.1.56");
     client.println("Connection: close");
     client.println();
-    // Serial.println("please wait!");
+    Serial.println("please wait!");
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
@@ -112,9 +107,9 @@ void printstr()
 void setup()
 {
   Serial.begin(115200);
-  pinMode(33, 0x02); // 232RX
-  pinMode(32, 0x01); // 232TX
-  Ethernet.init(5); // MKR ETH Shield
+  pinMode(33, OUTPUT); // 232RX
+  pinMode(32, INPUT);  // 232TX
+  Ethernet.init(5);    // MKR ETH Shield
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
@@ -149,7 +144,7 @@ void setup()
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 3000) == 1)
+  if (client.connect(server, 3000) == 1) 
   {
     //板子連上server
     Serial.print("connected to ");
@@ -167,26 +162,24 @@ void loop()
 {
   if (!Serial.available()) // serial沒東西
   {
-
     while (!client.available()) //等待server回覆
     {
     }
-
     int len = client.available();
     if (len > 0)
     {
-      byte buffer[80];
-      if (len > 80)
-        len = 80;
+      byte buffer[30];
+      if (len > 30)
+        len = 30;
       client.read(buffer, len);
       if (printWebData)
       {
         Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       }
     }
-    // Serial.println("");
+    Serial.println("");
   }
-  if (client.available() == 0 && Serial.available() >= 0)
+  else if (client.available() == 0 && Serial.available() >= 0)
   {
     //server丟完了 且 Serial有東西輸入
     printstr(); //serial輸入
