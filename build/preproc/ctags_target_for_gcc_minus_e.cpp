@@ -1,12 +1,13 @@
-# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
-# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
+# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino"
+# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
 // #include "./src/print.h"
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
-IPAddress server(192, 168, 1, 56); //目標server的ip
+IPAddress server(192, 168, 0, 102); //目標server的ip
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
+int port = 3000;
 
 EthernetClient client;
 
@@ -33,7 +34,7 @@ void checkConnect()
   // Serial.println(client.connected());
   if (client.connected() == 0)
   {
-    client.connect(server, 3000);
+    client.connect(server, port);
   }
   else
   {
@@ -47,8 +48,6 @@ void disConnectClient()
   Serial.println();
   client.stop();
   Serial.println("disconnect.");
-
-  Serial.println(client.connected());
   while (true)
   {
     Serial.println("enter \"/reconnect\" to connect server");
@@ -69,19 +68,28 @@ void printstr()
 {
   checkConnect();//若server斷線則重連
   Serial.println("");
-  Serial.println("enter a string");
+  Serial.println("------------------------------------");
+  Serial.print("command: ");
+  Serial.print("[");
+  Serial.print(server3);
+  Serial.print("] ");
+  Serial.print("[");
+  Serial.print(server1);
+  Serial.print("] ");
+  Serial.print("[");
+  Serial.print(server2);
+  Serial.print("] ");
+  Serial.print("[");
+  Serial.print(disconnect);
+  Serial.println("] ");
   while (!Serial.available())
   {
   }
   serialIn = Serial.readString();
   serialIn.remove(serialIn.length() - 1, 1);//刪掉換行字元
-  // serialLen = serialIn.length();
-  // Serial.println(serialLen);
-
-  // Serial.print("serialIn: ");
-  // Serial.println(serialIn);
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
-  { // command found
+  {
+    // command found
     webpage.concat(httpCommandF);
     webpage.concat(serialIn);
     webpage.concat(httpCommandS);
@@ -91,10 +99,10 @@ void printstr()
     Serial.println("");
     client.println(webpage);
     webpage = "";
-    client.println("Host: 192.168.1.56");
+    client.print("Host: ");
+    client.println(server);
     client.println("Connection: close");
     client.println();
-    // Serial.println("please wait!");
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
@@ -149,7 +157,7 @@ void setup()
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 3000) == 1)
+  if (client.connect(server, port) == 1)
   {
     //板子連上server
     Serial.print("connected to ");
@@ -184,7 +192,6 @@ void loop()
         Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       }
     }
-    // Serial.println("");
   }
   if (client.available() == 0 && Serial.available() >= 0)
   {

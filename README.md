@@ -4,16 +4,28 @@ EthernetWebClient
 ---
 
 + install Ethernet library
-+ 使用library範例中的WebClient/WebClient.ino
-+ 預先以node.js建好簡單的server並執行
-+ 更改將範例中的
++ 參考library範例中的WebClient/WebClient.ino
++ 預先以node.js建好簡單的server並運行
++ 程式設計
   + 參數設定
     + 設定Matric-310的Mac
-    + 更改目的ip與port(原本是連到google)
-    + char webpage[]="GET /about HTTP/1.1"; //要從server回傳的內容
-  + setup()
+    + 設定要連到的Server IP
+    + 設定Server Port
+    + 設定Http Command(eg."GET /about HTTP/1.1")
+  + 流程圖：
+  ![Alt text](/img/ethernetStoE/Flow_Chart.jpg)
+  + 腳位 & Baud更改 (void setup())
     + Ethernet.init(5); //chip select
     + Serial.begin(115200); **//更改baud**
++ 主要功能
+  + 串口輸入Http Command給Server，Server回傳資料到串口輸出
+    + Command Found
+    + Command Not Found
+    + Server斷線，等待Reconnect Command
++ 實際運行Demo
+  ![Alt text](/img/ethernetStoE/Demo_1.png)
+  ![Alt text](/img/ethernetStoE/Demo_2.png)
+  ![Alt text](/img/ethernetStoE/Demo_3.png)
 
 ---
 
