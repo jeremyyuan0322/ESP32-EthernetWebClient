@@ -1,125 +1,33 @@
-# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino"
-# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernet.ino" 2
-// #include "./src/print.h"
+# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino"
+# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+# 5 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+# 6 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
+// #include "./src/connection.h"
+
+bool printWebData = true; // set to false for better speed measurement
+EthernetClient client;
+IPAddress server(192, 168, 0, 102);//要連的SERVER 
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
-IPAddress server(192, 168, 1, 56); //目標server的ip
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
-
-EthernetClient client;
-
-// Variables to measure the speed
-unsigned long beginMicros, endMicros;
-unsigned long byteCount = 0;
-bool printWebData = true; // set to false for better speed measurement
-String httpCommandF = "GET ";
-String httpCommandS = " HTTP/1.1";
-String webpage; // http command
-String server1 = "/about";
-String server2 = "/name";
-String server3 = "/";
-String disconnect = "/end";
-String reConnect = "/reconnect";
-String serialIn;
-int serialLen;
-void checkConnect();
-void disConnectClient();
-void printstr();
-
-void checkConnect()
+void initGPIO()
 {
-  // Serial.println(client.connected());
-  if (client.connected() == 0)
-  {
-    client.connect(server, 3000);
-  }
-  else
-  {
-    Serial.println("");
-    Serial.println("");
-    Serial.println("connected!!");
-  }
-}
-void disConnectClient()
-{
-  Serial.println();
-  client.stop();
-  Serial.println("disconnect.");
-
-  Serial.println(client.connected());
-  while (true)
-  {
-    Serial.println("enter \"/reconnect\" to connect server");
-    while (!Serial.available())
-    {
-    }
-    serialIn = Serial.readString();
-    serialIn.remove(serialIn.length() - 1, 1);
-    if (serialIn.compareTo(reConnect) == 0)
-    {
-      serialIn = "";
-      Serial.println("reconnected!!");
-      break;
-    }
-  }
-}
-void printstr()
-{
-  checkConnect();//若server斷線則重連
-  Serial.println("");
-  Serial.println("enter a string");
-  while (!Serial.available())
-  {
-  }
-  serialIn = Serial.readString();
-  serialIn.remove(serialIn.length() - 1, 1);//刪掉換行字元
-  // serialLen = serialIn.length();
-  // Serial.println(serialLen);
-
-  // Serial.print("serialIn: ");
-  // Serial.println(serialIn);
-  if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
-  { // command found
-    webpage.concat(httpCommandF);
-    webpage.concat(serialIn);
-    webpage.concat(httpCommandS);
-
-    Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-    Serial.println(webpage); // GET /about HTTP/1.1
-    Serial.println("");
-    client.println(webpage);
-    webpage = "";
-    client.println("Host: 192.168.1.56");
-    client.println("Connection: close");
-    client.println();
-    // Serial.println("please wait!");
-  }
-  else if (serialIn.compareTo(disconnect) == 0)
-  {
-    disConnectClient();
-    printstr();
-  }
-  else
-  { // command not found
-    Serial.println("command not found");
-    serialIn = "";
-    printstr();
-  }
-  serialIn = "";
-}
-void setup()
-{
-  Serial.begin(115200);
   pinMode(33, 0x02); // 232RX
   pinMode(32, 0x01); // 232TX
   Ethernet.init(5); // MKR ETH Shield
+}
+void setup()
+{
+  initGPIO();
+  Serial.begin(115200);
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0)//板子嘗試用DHCP連網
   {
+    //DHCP連網失敗
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
     if (Ethernet.hardwareStatus() == EthernetNoHardware)
@@ -160,18 +68,22 @@ void setup()
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-  printstr();
+  StoE();
 }
 
 void loop()
 {
+  Serial.println(client.available());
   if (!Serial.available()) // serial沒東西
   {
-
+   Serial.println("Waiting for server......");
     while (!client.available()) //等待server回覆
     {
+      // Serial.println(client.available());
+      // delay(3000);
+      // break;
     }
-
+    Serial.println("Server return: ");
     int len = client.available();
     if (len > 0)
     {
@@ -186,9 +98,9 @@ void loop()
     }
     // Serial.println("");
   }
-  if (client.available() == 0 && Serial.available() >= 0)
+  if (client.available() == 0 && Serial.available() > 0)
   {
     //server丟完了 且 Serial有東西輸入
-    printstr(); //serial輸入
+    StoE(); //serial輸入
   }
 }

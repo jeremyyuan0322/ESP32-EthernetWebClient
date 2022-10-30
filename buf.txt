@@ -36,6 +36,8 @@ void checkConnect()
   }
   else
   {
+    Serial.println("");
+    Serial.println("");
     Serial.println("connected!!");
   }
 }
@@ -65,31 +67,33 @@ void disConnectClient()
 void printstr()
 {
   checkConnect();//若server斷線則重連
+  Serial.println("");
   Serial.println("enter a string");
   while (!Serial.available())
   {
   }
   serialIn = Serial.readString();
-  serialIn.remove(serialIn.length() - 1, 1);
-  serialLen = serialIn.length();
-  Serial.println(serialLen);
+  serialIn.remove(serialIn.length() - 1, 1);//刪掉換行字元
+  // serialLen = serialIn.length();
+  // Serial.println(serialLen);
 
-  Serial.print("serialIn: ");
-  Serial.println(serialIn);
+  // Serial.print("serialIn: ");
+  // Serial.println(serialIn);
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
   { // command found
     webpage.concat(httpCommandF);
     webpage.concat(serialIn);
     webpage.concat(httpCommandS);
 
-    Serial.println("webpage: "); // GET /jeremy HTTP/1.1
+    Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
     Serial.println(webpage);     // GET /about HTTP/1.1
+    Serial.println("");
     client.println(webpage);
     webpage = "";
     client.println("Host: 192.168.1.56");
     client.println("Connection: close");
     client.println();
-    Serial.println("please wait!");
+    // Serial.println("please wait!");
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
@@ -162,24 +166,26 @@ void loop()
 {
   if (!Serial.available()) // serial沒東西
   {
+    
     while (!client.available()) //等待server回覆
     {
     }
+    
     int len = client.available();
     if (len > 0)
     {
-      byte buffer[30];
-      if (len > 30)
-        len = 30;
+      byte buffer[80];
+      if (len > 80)
+        len = 80;
       client.read(buffer, len);
       if (printWebData)
       {
         Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       }
     }
-    Serial.println("");
+    // Serial.println("");
   }
-  else if (client.available() == 0 && Serial.available() >= 0)
+  if (client.available() == 0 && Serial.available() >= 0)
   {
     //server丟完了 且 Serial有東西輸入
     printstr(); //serial輸入

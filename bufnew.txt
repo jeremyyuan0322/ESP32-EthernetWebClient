@@ -1,7 +1,8 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <string.h>
-// #include "./src/print.h"
+#include "./src/print.h"
+#include "./src/Artila-Matrix310.h"
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
 IPAddress server(192, 168, 1, 56);                 //目標server的ip
 IPAddress ip(192, 168, 0, 74);
@@ -27,6 +28,12 @@ void checkConnect();
 void disConnectClient();
 void printstr();
 
+void initGPIO()
+{
+  pinMode(COM2_RX, OUTPUT); // 232RX
+  pinMode(COM2_TX, INPUT);  // 232TX
+  Ethernet.init(LAN_CS);    // MKR ETH Shield
+}
 void checkConnect()
 {
   // Serial.println(client.connected());
@@ -110,11 +117,9 @@ void printstr()
 }
 void setup()
 {
+  initGPIO();
   Serial.begin(115200);
-  pinMode(33, OUTPUT); // 232RX
-  pinMode(32, INPUT);  // 232TX
-  Ethernet.init(5);    // MKR ETH Shield
-
+  
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0)//板子嘗試用DHCP連網
