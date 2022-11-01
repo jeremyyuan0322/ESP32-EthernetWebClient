@@ -1,4 +1,4 @@
-#line 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/src/StoE.cpp"
+#line 1 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/src/StoE.cpp"
 #include <Arduino.h>
 #include <Ethernet.h>
 #include "StoE.h"
@@ -38,11 +38,9 @@ void StoE()
     // client.println(httpCommand);
     client.println(httpCommand);
     httpCommand = "";
-    client.println("Host: 192.168.0.102:3000");
-    // client.println("Connection: close");
-    // client.println();
-    // Serial.println("please wait!");
-    Serial.println(client.available());
+    client.println("Host: 192.168.1.56");
+    client.println("Connection: close");
+    client.println();    
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {

@@ -3,14 +3,21 @@
 #include "./src/Artila-Matrix310.h"
 #include "./src/ethernetStoE.h"
 #include "./src/StoE.h"
-// #include "./src/connection.h"
+
+// extern "C"{
+// #include "./src/StoE.h"
+// }
 
 bool printWebData = true; // set to false for better speed measurement
 EthernetClient client;
-IPAddress server(SERVER);//要連的SERVER 
-byte mac[] = {MAC}; // mac
+IPAddress server(SERVER); //要連的SERVER
+byte mac[] = {MAC};       // mac
 IPAddress ip(IP);
 IPAddress myDns(MYDNS);
+void debugStr()
+{
+  Serial.println(client.available());
+}
 void initGPIO()
 {
   pinMode(COM2_RX, OUTPUT); // 232RX
@@ -24,9 +31,9 @@ void setup()
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin(mac) == 0)//板子嘗試用DHCP連網
+  if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
-    //DHCP連網失敗
+    // DHCP連網失敗
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
     if (Ethernet.hardwareStatus() == EthernetNoHardware)
@@ -45,7 +52,8 @@ void setup()
     Ethernet.begin(mac, ip, myDns);
   }
   else
-  {//板子成功用DHCP連上網
+  {
+    //板子成功用DHCP連上網
     Serial.print("  DHCP assigned IP ");
     Serial.println(Ethernet.localIP());
   }
@@ -56,7 +64,7 @@ void setup()
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, PORT) == 1) 
+  if (client.connect(server, PORT) == 1)
   {
     //板子連上server
     Serial.print("connected to ");
@@ -72,10 +80,10 @@ void setup()
 
 void loop()
 {
-  Serial.println(client.available());
+  debugStr();
   if (!Serial.available()) // serial沒東西
   {
-   Serial.println("Waiting for server......"); 
+    Serial.println("Waiting for server......");
     while (!client.available()) //等待server回覆
     {
       // Serial.println(client.available());
@@ -95,11 +103,10 @@ void loop()
         Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       }
     }
-    // Serial.println("");
   }
-  if (client.available() == 0 && Serial.available() > 0)
+  if (client.available() == 0 && Serial.available() >= 0)
   {
-    //server丟完了 且 Serial有東西輸入
-    StoE(); //serial輸入
+    // server丟完了 且 Serial有東西輸入
+    StoE(); // serial輸入
   }
 }

@@ -1,17 +1,24 @@
-# 1 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino"
-# 2 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
-# 5 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
-# 6 "/Users/jeremyyuan/Documents/git/ESP32-EthernetWebClient/ethernetStoE.ino" 2
-// #include "./src/connection.h"
+# 1 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+# 2 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 3 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 4 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 5 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+// #include "./src/StoE.h"
+
+extern "C"{
+# 9 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+}
 
 bool printWebData = true; // set to false for better speed measurement
 EthernetClient client;
-IPAddress server(192, 168, 0, 102);//要連的SERVER 
+IPAddress server(192, 168, 1, 56); //要連的SERVER
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
+void debugstr()
+{
+  Serial.println(client.available());
+}
 void initGPIO()
 {
   pinMode(33, 0x02); // 232RX
@@ -25,9 +32,9 @@ void setup()
 
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin(mac) == 0)//板子嘗試用DHCP連網
+  if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
-    //DHCP連網失敗
+    // DHCP連網失敗
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
     if (Ethernet.hardwareStatus() == EthernetNoHardware)
@@ -46,7 +53,8 @@ void setup()
     Ethernet.begin(mac, ip, myDns);
   }
   else
-  {//板子成功用DHCP連上網
+  {
+    //板子成功用DHCP連上網
     Serial.print("  DHCP assigned IP ");
     Serial.println(Ethernet.localIP());
   }
@@ -73,10 +81,10 @@ void setup()
 
 void loop()
 {
-  Serial.println(client.available());
+  debugstr();
   if (!Serial.available()) // serial沒東西
   {
-   Serial.println("Waiting for server......");
+    Serial.println("Waiting for server......");
     while (!client.available()) //等待server回覆
     {
       // Serial.println(client.available());
@@ -96,11 +104,10 @@ void loop()
         Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       }
     }
-    // Serial.println("");
   }
-  if (client.available() == 0 && Serial.available() > 0)
+  if (client.available() == 0 && Serial.available() >= 0)
   {
-    //server丟完了 且 Serial有東西輸入
-    StoE(); //serial輸入
+    // server丟完了 且 Serial有東西輸入
+    StoE(); // serial輸入
   }
 }
