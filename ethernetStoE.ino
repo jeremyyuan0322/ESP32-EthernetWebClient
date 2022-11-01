@@ -1,12 +1,14 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <string.h>
+#include "./src/Artila-Matrix310.h"
+#include "./src/ethernetStoE.h"
 // #include "./src/print.h"
-byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
-IPAddress server(192, 168, 1, 56);                 //目標server的ip
-IPAddress ip(192, 168, 0, 74);
-IPAddress myDns(192, 168, 0, 1);
-int port = 3000;
+byte mac[] = {MAC}; // mac
+IPAddress server(SERVER);                 //目標server的ip
+IPAddress ip(IP);
+IPAddress myDns(MYDNS);
+int port = PORT;
 
 EthernetClient client;
 
@@ -158,14 +160,7 @@ void getSerialIn()
     }
   }
 }
-void setup()
-{
-  Serial.begin(115200);
-  // pinMode(33, OUTPUT); // 232RX
-  // pinMode(32, INPUT);  // 232TX
-  Ethernet.init(5); // MKR ETH Shield
-  serialIn.reserve(200);
-  // start the Ethernet connection:
+void connectToEtherent(){
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
@@ -193,6 +188,8 @@ void setup()
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
+}
+void connectToServer(){
   Serial.print("connecting to ");
   Serial.print(server);
   Serial.println("...");
@@ -209,6 +206,21 @@ void setup()
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
+  
+}
+void initGPIO()
+{
+  Ethernet.init(LAN_CS);    // MKR ETH Shield
+}
+void setup()
+{
+  initGPIO();
+  Serial.begin(115200);
+  serialIn.reserve(200);
+  // start the Ethernet connection:
+  connectToEtherent();
+  
+  connectToServer();
   commandHint();
 }
 
@@ -218,7 +230,6 @@ void loop()
   {
     serverReturn();
   }
-
   if (stringComplete)
   { // serial輸入完成並印出
     serialIn.trim();
