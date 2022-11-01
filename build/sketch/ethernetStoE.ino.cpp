@@ -38,15 +38,15 @@ void serverReturn();
 void debugStr(String str);
 void getSerialIn();
 
-#line 163 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 166 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToEtherent();
-#line 192 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 195 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToServer();
-#line 211 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 214 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void initGPIO();
-#line 215 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 218 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void setup();
-#line 227 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 230 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void loop();
 #line 39 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void debugStr(String str){
@@ -126,7 +126,7 @@ void httpCommand()
 void printstr()
 {
   checkConnect(); //若server斷線則重連
-  commandHint();
+  
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
   {
     // command found
@@ -154,6 +154,9 @@ void serverReturn()
     if (printWebData)
     {
       Serial.write(buffer, len); // show in the serial monitor (slows some boards)
+      if(!client.available()){
+        commandHint();
+      }
     }
   }
 }

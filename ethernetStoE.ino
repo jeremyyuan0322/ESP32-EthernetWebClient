@@ -113,7 +113,7 @@ void httpCommand()
 void printstr()
 {
   checkConnect(); //若server斷線則重連
-  commandHint();
+  
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
   {
     // command found
@@ -141,6 +141,9 @@ void serverReturn()
     if (printWebData)
     {
       Serial.write(buffer, len); // show in the serial monitor (slows some boards)
+      if(!client.available()){
+        commandHint();
+      }
     }
   }
 }
