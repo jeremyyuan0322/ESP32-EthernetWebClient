@@ -4,11 +4,11 @@
 #include <SPI.h>
 #include "./src/Artila-Matrix310.h"
 #include "./src/ethernetStoE.h"
-// #include "./src/StoE.h"
-
-extern "C"{
 #include "./src/StoE.h"
-}
+
+// extern "C"{
+// #include "./src/StoE.h"
+// }
 
 bool printWebData = true; // set to false for better speed measurement
 EthernetClient client;
@@ -17,7 +17,7 @@ byte mac[] = {MAC};       // mac
 IPAddress ip(IP);
 IPAddress myDns(MYDNS);
 #line 17 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void debugstr();
+void debugStr();
 #line 21 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void initGPIO();
 #line 27 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
@@ -25,7 +25,7 @@ void setup();
 #line 81 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void loop();
 #line 17 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void debugstr()
+void debugStr()
 {
   Serial.println(client.available());
 }
@@ -91,7 +91,7 @@ void setup()
 
 void loop()
 {
-  debugstr();
+  debugStr();
   if (!Serial.available()) // serial沒東西
   {
     Serial.println("Waiting for server......");

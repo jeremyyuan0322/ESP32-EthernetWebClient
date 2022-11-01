@@ -3,11 +3,11 @@
 # 3 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 # 4 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 # 5 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-// #include "./src/StoE.h"
+# 6 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 
-extern "C"{
-# 9 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-}
+// extern "C"{
+// #include "./src/StoE.h"
+// }
 
 bool printWebData = true; // set to false for better speed measurement
 EthernetClient client;
@@ -15,7 +15,7 @@ IPAddress server(192, 168, 1, 56); //要連的SERVER
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
-void debugstr()
+void debugStr()
 {
   Serial.println(client.available());
 }
@@ -81,7 +81,7 @@ void setup()
 
 void loop()
 {
-  debugstr();
+  debugStr();
   if (!Serial.available()) // serial沒東西
   {
     Serial.println("Waiting for server......");
