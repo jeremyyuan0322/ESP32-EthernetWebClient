@@ -15,6 +15,7 @@ EthernetClient client;
 unsigned long beginMicros, endMicros;
 unsigned long byteCount = 0;
 bool printWebData = true; // set to false for better speed measurement
+bool stringComplete = false; // Serial
 String httpCommandF = "GET ";
 String httpCommandS = " HTTP/1.1";
 String webpage; // http command
@@ -28,6 +29,15 @@ int serialLen;
 void checkConnect();
 void disConnectClient();
 void printstr();
+void commandHint();
+void httpCommand();
+void serverReturn();
+void debugStr(String str);
+void getSerialIn();
+
+void debugStr(String str){
+  Serial.println(str);
+}
 
 void checkConnect()
 {
@@ -64,9 +74,8 @@ void disConnectClient()
     }
   }
 }
-void printstr()
+void commandHint()
 {
-  checkConnect();//若server斷線則重連
   Serial.println("");
   Serial.println("------------------------------------");
   Serial.print("command: ");
@@ -82,42 +91,73 @@ void printstr()
   Serial.print("[");
   Serial.print(disconnect);
   Serial.println("] ");
-  while (!Serial.available())
-  {
-  }
-  serialIn = Serial.readString();
-  serialIn.remove(serialIn.length() - 1, 1);//刪掉換行字元
+}
+void httpCommand()
+{
+  webpage.concat(httpCommandF);
+  webpage.concat(serialIn);
+  webpage.concat(httpCommandS);
+  Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
+  Serial.println(webpage); // GET /about HTTP/1.1
+  Serial.println("");
+  // client.print("GET ");
+  client.println(webpage);
+  // client.print(" HTTP/1.1");
+  webpage = "";
+  client.print("Host: ");
+  client.println(server);
+  client.println("Connection: close");
+  client.println();
+}
+void printstr()
+{
+  checkConnect(); //若server斷線則重連
+  commandHint();
   if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
   {
     // command found
-    webpage.concat(httpCommandF);
-    webpage.concat(serialIn);
-    webpage.concat(httpCommandS);
-
-    Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-    Serial.println(webpage); // GET /about HTTP/1.1
-    Serial.println("");
-    // client.print("GET ");
-    client.println(webpage);
-    // client.print(" HTTP/1.1");
-    webpage = "";
-    client.print("Host: ");
-    client.println(server);
-    client.println("Connection: close");
-    client.println();
+    httpCommand();
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
     disConnectClient();
-    printstr();
   }
   else
   { // command not found
     Serial.println("command not found");
-    serialIn = "";
-    printstr();
+    commandHint();
   }
-  serialIn = "";
+}
+void serverReturn()
+{
+  int len = client.available();
+  if (len > 0)
+  {
+    byte buffer[80];
+    if (len > 80)
+      len = 80;
+    client.read(buffer, len);
+    if (printWebData)
+    {
+      Serial.write(buffer, len); // show in the serial monitor (slows some boards)
+    }
+  }
+}
+void getSerialIn()
+{
+  while (Serial.available())
+  {
+    // get the new byte:
+    char inChar = (char)Serial.read(); // Ascii轉成char
+    // add it to the inputString:
+    serialIn += inChar;
+    // if the incoming character is a newline, set a flag so the main loop can
+    // do something about it:
+    if (inChar == '\n')
+    {
+      stringComplete = true;
+    }
+  }
 }
 void setup()
 {
@@ -125,10 +165,10 @@ void setup()
   // pinMode(33, OUTPUT); // 232RX
   // pinMode(32, INPUT);  // 232TX
   Ethernet.init(5); // MKR ETH Shield
-
+  serialIn.reserve(200);
   // start the Ethernet connection:
   Serial.println("Initialize Ethernet with DHCP:");
-  if (Ethernet.begin(mac) == 0)//板子嘗試用DHCP連網
+  if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
@@ -148,7 +188,7 @@ void setup()
     Ethernet.begin(mac, ip, myDns);
   }
   else
-  {//板子成功用DHCP連上網
+  { //板子成功用DHCP連上網
     Serial.print("  DHCP assigned IP ");
     Serial.println(Ethernet.localIP());
   }
@@ -170,34 +210,26 @@ void setup()
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-  printstr();
+  commandHint();
+  // printstr();
 }
 
 void loop()
 {
-  if (!Serial.available()) // serial沒東西
+  if (!Serial.available())
   {
-
-    while (!client.available()) //等待server回覆
-    {
-    }
-
-    int len = client.available();
-    if (len > 0)
-    {
-      byte buffer[80];
-      if (len > 80)
-        len = 80;
-      client.read(buffer, len);
-      if (printWebData)
-      {
-        Serial.write(buffer, len); // show in the serial monitor (slows some boards)
-      }
-    }
+    serverReturn();
   }
-  if (client.available() == 0 && Serial.available() >= 0)
-  {
-    //server丟完了 且 Serial有東西輸入
-    printstr(); //serial輸入
+
+  if (stringComplete)
+  { // serial輸入完成並印出
+    serialIn.trim();
+    // Serial.println(serialIn);
+    printstr();
+
+    // clear the string:
+    serialIn = "";
+    stringComplete = false;
   }
+  getSerialIn();
 }
