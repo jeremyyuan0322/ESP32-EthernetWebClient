@@ -3,7 +3,7 @@
 #include <string.h>
 // #include "./src/print.h"
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
-IPAddress server(192, 168, 0, 102);                 //目標server的ip
+IPAddress server(192, 168, 1, 56);                 //目標server的ip
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
 int port = 3000;
@@ -96,7 +96,9 @@ void printstr()
     Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
     Serial.println(webpage);     // GET /about HTTP/1.1
     Serial.println("");
+    // client.print("GET ");
     client.println(webpage);
+    // client.print(" HTTP/1.1");
     webpage = "";
     client.print("Host: ");
     client.println(server);
@@ -119,8 +121,8 @@ void printstr()
 void setup()
 {
   Serial.begin(115200);
-  pinMode(33, OUTPUT); // 232RX
-  pinMode(32, INPUT);  // 232TX
+  // pinMode(33, OUTPUT); // 232RX
+  // pinMode(32, INPUT);  // 232TX
   Ethernet.init(5);    // MKR ETH Shield
 
   // start the Ethernet connection:
