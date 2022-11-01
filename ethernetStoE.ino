@@ -12,29 +12,28 @@ int port = PORT;
 
 EthernetClient client;
 
-// Variables to measure the speed
-unsigned long beginMicros, endMicros;
-unsigned long byteCount = 0;
 bool printWebData = true;    // set to false for better speed measurement
 bool stringComplete = false; // Serial
 String httpCommandF = "GET ";
 String httpCommandS = " HTTP/1.1";
-String webpage; // http command
-String server1 = "/about";
-String server2 = "/name";
-String server3 = "/";
+String httpCommand; // http command
+String routerAbout = "/about";
+String routerName = "/name";
+String routerRoot = "/";
 String disconnect = "/end";
 String reConnect = "/reconnect";
-String serialIn;
-int serialLen;
+String help = "/help";
+String serialIn;//Serial輸入的字串
 void checkConnect();
 void disConnectClient();
-void printstr();
+void StoE();
 void commandHint();
-void httpCommand();
+void sendHttpCommand();
 void serverReturn();
 void debugStr(String str);
 void getSerialIn();
+void connectToEthernet();
+void connectToServer();
 
 void debugStr(String str){
   Serial.println(str);
@@ -81,52 +80,54 @@ void commandHint()
   Serial.println("------------------------------------");
   Serial.print("command: ");
   Serial.print("[");
-  Serial.print(server3);
+  Serial.print(routerRoot);
   Serial.print("] ");
   Serial.print("[");
-  Serial.print(server1);
+  Serial.print(routerAbout);
   Serial.print("] ");
   Serial.print("[");
-  Serial.print(server2);
+  Serial.print(routerName);
   Serial.print("] ");
   Serial.print("[");
   Serial.print(disconnect);
   Serial.println("] ");
 }
-void httpCommand()
+void sendHttpCommand()
 {
-  webpage.concat(httpCommandF);
-  webpage.concat(serialIn);
-  webpage.concat(httpCommandS);
+  httpCommand.concat(httpCommandF);
+  httpCommand.concat(serialIn);
+  httpCommand.concat(httpCommandS);
   Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-  Serial.println(webpage);        // GET /about HTTP/1.1
+  Serial.println(httpCommand);        // GET /about HTTP/1.1
   Serial.println("");
   // client.print("GET ");
-  client.println(webpage);
+  client.println(httpCommand);
   // client.print(" HTTP/1.1");
-  webpage = "";
+  httpCommand = "";
   client.print("Host: ");
   client.println(server);
   client.println("Connection: close");
   client.println();
 }
-void printstr()
+void StoE()
 {
   checkConnect(); //若server斷線則重連
-  
-  if (serialIn.compareTo(server1) == 0 || serialIn.compareTo(server2) == 0 || serialIn.compareTo(server3) == 0)
+  if (serialIn.compareTo(routerAbout) == 0 || serialIn.compareTo(routerName) == 0 || serialIn.compareTo(routerRoot) == 0)
   {
     // command found
-    httpCommand();
+    sendHttpCommand();
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
     disConnectClient();
   }
+  else if(serialIn.compareTo(help) == 0)
+  {
+    commandHint();
+  }
   else
   { // command not found
     Serial.println("command not found");
-    commandHint();
   }
 }
 void serverReturn()
@@ -142,7 +143,8 @@ void serverReturn()
     {
       Serial.write(buffer, len); // show in the serial monitor (slows some boards)
       if(!client.available()){
-        commandHint();
+        Serial.println("");
+        Serial.println("Server disconnected");
       }
     }
   }
@@ -222,7 +224,6 @@ void setup()
   serialIn.reserve(200);
   // start the Ethernet connection:
   connectToEtherent();
-  
   connectToServer();
   commandHint();
 }
@@ -236,7 +237,7 @@ void loop()
   if (stringComplete)
   { // serial輸入完成並印出
     serialIn.trim();
-    printstr();
+    StoE();
 
     // clear the string:
     serialIn = "";
