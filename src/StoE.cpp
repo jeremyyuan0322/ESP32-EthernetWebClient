@@ -1,61 +1,34 @@
 #include <Arduino.h>
 #include <Ethernet.h>
 #include "StoE.h"
-#include "connection.h"
+// #include "connection.h"
 #include "ethernetStoE.h"
-String serialIn;
-void StoE(EthernetClient client, IPAddress server)
+void StoE(String serialIn)
 {
-  // extern EthernetClient client;
-  String httpCommandF = "GET ";
-  String httpCommandS = " HTTP/1.1";
-  String httpCommand; // http command
   String routerAbout = "/about";
   String routerName = "/name";
   String routerRoot = "/";
   String disconnect = "/end";
-  char ch;
-
-  // IPAddress server(SERVER);//要連的SERVER
-  checkConnect(client, server); //若server斷線則重連
-  // client.connect(server, PORT);
-  Serial.println(client.connected());
-  Serial.println("");
-  Serial.println("enter a string");
-  while (!Serial.available())
-  {
-  }
-  serialIn = Serial.readString();
-  serialIn.trim();
+  String help = "/help";
+  checkConnect(); //若server斷線則重連
   if (serialIn.compareTo(routerAbout) == 0 || serialIn.compareTo(routerName) == 0 || serialIn.compareTo(routerRoot) == 0)
-  { // command found
-    httpCommand.concat(httpCommandF);
-    httpCommand.concat(serialIn);
-    httpCommand.concat(httpCommandS);
-    Serial.println(server);
-    Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-    Serial.println(httpCommand);    // GET /about HTTP/1.1
-    Serial.println("");
-    // client.println(httpCommand);
-    client.println(httpCommand);
-    httpCommand = "";
-    client.print("Host: ");
-    client.print(server);
-    
-    client.println("Connection: close");
-    client.println();
-    // Serial.println(client.available());    
+  {
+    // command found
+    sendHttpCommand();
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
-    disConnectClient(client, serialIn);
-    StoE(client, server);
+    disConnectClient();
+  }
+  else if(serialIn.compareTo(help) == 0)
+  {
+    commandHint();
   }
   else
   { // command not found
-    Serial.println("command not found");
-    serialIn = "";
-    StoE(client, server);
+    Serial.print("\"");
+    Serial.print(serialIn);
+    Serial.print("\"");
+    Serial.println(" is not a command. See \"/help\".");
   }
-  serialIn = "";
 }

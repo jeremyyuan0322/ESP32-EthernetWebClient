@@ -136,5 +136,4 @@
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Server.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Udp.h \
  /Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/build/sketch/src/StoE.h \
- /Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/build/sketch/src/connection.h \
  /Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/build/sketch/src/ethernetStoE.h

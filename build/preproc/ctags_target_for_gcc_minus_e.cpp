@@ -4,37 +4,142 @@
 # 4 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 # 5 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 # 6 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-
-// extern "C"{
-// #include "./src/StoE.h"
-// }
-
-bool printWebData = true; // set to false for better speed measurement
-EthernetClient client;
-IPAddress server(192, 168, 1, 56); //要連的SERVER
+# 7 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
+IPAddress server(192, 168, 1, 56); //目標server的ip
 IPAddress ip(192, 168, 0, 74);
 IPAddress myDns(192, 168, 0, 1);
-void debugStr(String str)
-{
+int port = 3000;
+
+EthernetClient client;
+
+bool printWebData = true; // set to false for better speed measurement
+bool stringComplete = false; // Serial
+
+String httpCommand; // http command
+String serialIn;//Serial輸入的字串
+
+void debugStr(String str){
   Serial.println(str);
 }
-void initGPIO()
-{
-  pinMode(33, 0x02); // 232RX
-  pinMode(32, 0x01); // 232TX
-  Ethernet.init(5); // MKR ETH Shield
-}
-void setup()
-{
-  initGPIO();
-  Serial.begin(115200);
 
-  // start the Ethernet connection:
+void checkConnect()
+{
+  // Serial.println(client.connected());
+  if (client.connected() == 0)
+  {
+    client.connect(server, port);
+  }
+  else
+  {
+    Serial.println("");
+    Serial.println("");
+    Serial.println("connected!!");
+  }
+}
+void disConnectClient()
+{
+  String reConnect = "/reconnect";
+  Serial.println();
+  client.stop();
+  Serial.println("disconnect.");
+  while (true)
+  {
+    Serial.println("enter \"/reconnect\" to connect server");
+    while (!Serial.available())
+    {
+    }
+    serialIn = Serial.readString();
+    serialIn.remove(serialIn.length() - 1, 1);
+    if (serialIn.compareTo(reConnect) == 0)
+    {
+      serialIn = "";
+      Serial.println("reconnected!!");
+      break;
+    }
+  }
+}
+void commandHint()
+{
+  String routerAbout = "/about";
+String routerName = "/name";
+String routerRoot = "/";
+String disconnect = "/end";
+  Serial.println("");
+  Serial.println("------------------------------------");
+  Serial.print("command: ");
+  Serial.print("[");
+  Serial.print(routerRoot);
+  Serial.print("] ");
+  Serial.print("[");
+  Serial.print(routerAbout);
+  Serial.print("] ");
+  Serial.print("[");
+  Serial.print(routerName);
+  Serial.print("] ");
+  Serial.print("[");
+  Serial.print(disconnect);
+  Serial.println("] ");
+}
+void sendHttpCommand()
+{
+  String httpCommandF = "GET ";
+String httpCommandS = " HTTP/1.1";
+  httpCommand.concat(httpCommandF);
+  httpCommand.concat(serialIn);
+  httpCommand.concat(httpCommandS);
+  Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
+  Serial.println(httpCommand); // GET /about HTTP/1.1
+  Serial.println("");
+  // client.print("GET ");
+  client.println(httpCommand);
+  // client.print(" HTTP/1.1");
+  httpCommand = "";
+  client.print("Host: ");
+  client.println(server);
+  client.println("Connection: close");
+  client.println();
+}
+
+void serverReturn()
+{
+  int len = client.available();
+  if (len > 0)
+  {
+    byte buffer[80];
+    if (len > 80)
+      len = 80;
+    client.read(buffer, len);
+    if (printWebData)
+    {
+      Serial.write(buffer, len); // show in the serial monitor (slows some boards)
+      if(!client.available()){
+        Serial.println("");
+        Serial.println("Server disconnected");
+      }
+    }
+  }
+}
+void getSerialIn()
+{
+  while (Serial.available())
+  {
+    // get the new byte:
+    char inChar = (char)Serial.read(); // Ascii轉成char
+    // add it to the inputString:
+    serialIn += inChar;
+    // if the incoming character is a newline, set a flag so the main loop can
+    // do something about it:
+    if (inChar == '\n')
+    {
+      stringComplete = true;
+    }
+  }
+}
+void connectToEtherent(){
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
-    // DHCP連網失敗
     Serial.println("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
     if (Ethernet.hardwareStatus() == EthernetNoHardware)
@@ -53,19 +158,20 @@ void setup()
     Ethernet.begin(mac, ip, myDns);
   }
   else
-  {
-    //板子成功用DHCP連上網
+  { //板子成功用DHCP連上網
     Serial.print("  DHCP assigned IP ");
     Serial.println(Ethernet.localIP());
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
+}
+void connectToServer(){
   Serial.print("connecting to ");
   Serial.print(server);
   Serial.println("...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 3000) == 1)
+  if (client.connect(server, port) == 1)
   {
     //板子連上server
     Serial.print("connected to ");
@@ -76,41 +182,37 @@ void setup()
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-  StoE(client, server);
+
+}
+void initGPIO()
+{
+  Ethernet.init(5); // MKR ETH Shield
+}
+void setup()
+{
+  initGPIO();
+  Serial.begin(115200);
+  serialIn.reserve(200);
+  // start the Ethernet connection:
+  connectToEtherent();
+  connectToServer();
+  commandHint();
 }
 
 void loop()
 {
-  // debugStr(String(client.available()));
-  // Serial.println(client.connected());
-  // Serial.println(client.remoteIP());
-  if (!Serial.available()) // serial沒東西
+  if (!Serial.available())
   {
-    Serial.println("Waiting for server......");
-    while (!client.available()) //等待server回覆
-    {
-      client.setConnectionTimeout(5000);
-      Serial.println("timeout");
-      break;
-    }
+    serverReturn();
+  }
+  if (stringComplete)
+  { // serial輸入完成並印出
+    serialIn.trim();
+    StoE(serialIn);
 
-    Serial.println("Server return: ");
-    int len = client.available();
-    if (len > 0)
-    {
-      byte buffer[80];
-      if (len > 80)
-        len = 80;
-      client.read(buffer, len);
-      if (printWebData)
-      {
-        Serial.write(buffer, len); // show in the serial monitor (slows some boards)
-      }
-    }
+    // clear the string:
+    serialIn = "";
+    stringComplete = false;
   }
-  if (client.available() == 0 && Serial.available() >= 0)
-  {
-    // server丟完了 且 Serial有東西輸入
-    StoE(client, server); // serial輸入
-  }
+  getSerialIn();
 }

@@ -131,12 +131,12 @@
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/spi_flash/esp_partition.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/tools/sdk/include/spi_flash/esp_spi_flash.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/variants/esp32/pins_arduino.h \
+ /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/libraries/SPI/src/SPI.h \
+ /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/esp32-hal-spi.h \
  /Users/jeremyyuan/Documents/Arduino/libraries/Ethernet/src/Ethernet.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Client.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Server.h \
  /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/Udp.h \
- /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/libraries/SPI/src/SPI.h \
- /Users/jeremyyuan/Library/Arduino15/packages/esp32/hardware/esp32/1.0.6/cores/esp32/esp32-hal-spi.h \
  /Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/build/sketch/./src/Artila-Matrix310.h \
  /Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/build/sketch/./src/ethernetStoE.h \
  /Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/build/sketch/./src/StoE.h

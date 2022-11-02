@@ -5,4 +5,15 @@
 #define IP 192, 168, 0, 74
 #define MYDNS 192, 168, 0, 1
 #define PORT 3000
+void checkConnect();
+void disConnectClient();
+// void StoE(String serialIn);
+void commandHint();
+void sendHttpCommand();
+void serverReturn();
+void debugStr(String str);
+void getSerialIn();
+void connectToEthernet();
+void connectToServer();
+void initGPIO();
 #endif
