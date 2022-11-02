@@ -18,6 +18,13 @@ void debugStr(String str)
 
 void serverReturn()
 {
+  if(client.available()>0){
+    Serial.println("");
+    Serial.println("server buf has data!!!!!!!!!!!");
+    if(client.connected()==0){Serial.println("disconnect!!!!!!!!!!!");}
+    }
+
+
   int len = client.available();
   if (len > 0)
   {

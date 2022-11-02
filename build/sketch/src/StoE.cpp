@@ -9,7 +9,7 @@ void StoE(String serialIn, EthernetClient client)
   String routerRoot = "/";
   String disconnect = "/end";
   String help = "/help";
-  checkConnect(client); //若server斷線則重連
+  
   if (serialIn.compareTo(routerAbout) == 0 || serialIn.compareTo(routerName) == 0 || serialIn.compareTo(routerRoot) == 0)
   {
     // command found
@@ -54,8 +54,8 @@ void sendHttpCommand(String serialIn, EthernetClient client)
   IPAddress server(SERVER); //目標server的ip
   String httpCommandF = "GET ";
   String httpCommandS = " HTTP/1.1";
-  String httpCommand; // http command
-
+  String httpCommand;       // http command
+  checkConnect(client); //若server斷線則重連
   httpCommand.concat(httpCommandF);
   httpCommand.concat(serialIn);
   httpCommand.concat(httpCommandS);

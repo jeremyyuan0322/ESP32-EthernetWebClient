@@ -16,17 +16,17 @@ String serialIn; // Serial輸入的字串
 void debugStr(String str);
 #line 18 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void serverReturn();
-#line 38 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 45 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void getSerialIn();
-#line 54 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 61 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToEtherent();
-#line 88 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 95 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToServer();
-#line 111 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 118 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void initGPIO();
-#line 115 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 122 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void setup();
-#line 126 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 133 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void loop();
 #line 13 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void debugStr(String str)
@@ -36,6 +36,13 @@ void debugStr(String str)
 
 void serverReturn()
 {
+  if(client.available()>0){
+    Serial.println("");
+    Serial.println("server buf has data!!!!!!!!!!!");
+    if(client.connected()==0){Serial.println("disconnect!!!!!!!!!!!");}
+    }
+  
+  
   int len = client.available();
   if (len > 0)
   {
