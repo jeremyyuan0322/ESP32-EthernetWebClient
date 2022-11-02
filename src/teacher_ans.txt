@@ -1,0 +1,57 @@
+//我稍微修改
+#include <stdio.h>
+#include <conio.h>
+
+#define ESC ((char)0x1b) // escpae
+
+char buf[128];
+
+void compare(char string[6], char *p)
+{
+    printf("compare \"%s\"\n", string);
+    char ch;
+    char *ptr = p; //把指標p的初始值存成ptr
+    int idx = 0;
+    while (_kbhit) // 按下任意按鍵， _kbhit 會傳回非零值。 否則，它會傳回 0。
+    {
+        ch = getch();
+        printf("1: %c\n", ch);
+        if (ch == ESC)
+        {
+            break;
+        }
+        else
+        {
+            printf("2: %c\n", *p);
+            if (ch == *p)
+            {
+                buf[idx] = ch; // 保存在緩衝區 等同於buf[idx=idx+1]
+                if (*(p + 1) != '\0')
+                {
+                    p++;
+                    idx++;
+                }
+                else
+                { // bingo
+                    buf[++idx] = '\0';
+                    printf("Bingo! got: %s\n", buf);
+                    break;
+                }
+            }
+            else// 重新開始比對循環
+            {            
+                p = ptr; //指標p設為初始值
+                idx = 0;
+            }
+        }
+    }
+    printf("end\n");
+}
+
+int main()
+{
+    compare("jeremy", "jeremy"); //比較"jeremy"
+    // compare("tanhsi", "tanhsi");//比較"tanhsi"
+}
+
+

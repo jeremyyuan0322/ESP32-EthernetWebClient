@@ -6,125 +6,32 @@
 #include "./src/Artila-Matrix310.h"
 #include "./src/ethernetStoE.h"
 #include "./src/StoE.h"
-byte mac[] = {MAC}; // mac
-IPAddress server(SERVER);                 //目標server的ip
-IPAddress ip(IP);
-IPAddress myDns(MYDNS);
-int port = PORT;
 
 EthernetClient client;
-
 bool printWebData = true;    // set to false for better speed measurement
 bool stringComplete = false; // Serial
+String serialIn; // Serial輸入的字串
 
-String httpCommand; // http command
-String serialIn;//Serial輸入的字串
-
-#line 21 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 13 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void debugStr(String str);
-#line 25 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void checkConnect();
-#line 39 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void disConnectClient();
-#line 61 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void commandHint();
-#line 83 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void sendHttpCommand();
-#line 103 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 18 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void serverReturn();
-#line 122 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 38 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void getSerialIn();
-#line 138 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 54 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToEtherent();
-#line 167 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 88 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToServer();
-#line 186 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 111 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void initGPIO();
-#line 190 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 115 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void setup();
-#line 201 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 126 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void loop();
-#line 21 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-void debugStr(String str){
+#line 13 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+void debugStr(String str)
+{
   Serial.println(str);
-}
-
-void checkConnect()
-{
-  // Serial.println(client.connected());
-  if (client.connected() == 0)
-  {
-    client.connect(server, port);
-  }
-  else
-  {
-    Serial.println("");
-    Serial.println("");
-    Serial.println("connected!!");
-  }
-}
-void disConnectClient()
-{
-  String reConnect = "/reconnect";
-  Serial.println();
-  client.stop();
-  Serial.println("disconnect.");
-  while (true)
-  {
-    Serial.println("enter \"/reconnect\" to connect server");
-    while (!Serial.available())
-    {
-    }
-    serialIn = Serial.readString();
-    serialIn.remove(serialIn.length() - 1, 1);
-    if (serialIn.compareTo(reConnect) == 0)
-    {
-      serialIn = "";
-      Serial.println("reconnected!!");
-      break;
-    }
-  }
-}
-void commandHint()
-{
-  String routerAbout = "/about";
-String routerName = "/name";
-String routerRoot = "/";
-String disconnect = "/end";
-  Serial.println("");
-  Serial.println("------------------------------------");
-  Serial.print("command: ");
-  Serial.print("[");
-  Serial.print(routerRoot);
-  Serial.print("] ");
-  Serial.print("[");
-  Serial.print(routerAbout);
-  Serial.print("] ");
-  Serial.print("[");
-  Serial.print(routerName);
-  Serial.print("] ");
-  Serial.print("[");
-  Serial.print(disconnect);
-  Serial.println("] ");
-}
-void sendHttpCommand()
-{
-  String httpCommandF = "GET ";
-String httpCommandS = " HTTP/1.1";
-  httpCommand.concat(httpCommandF);
-  httpCommand.concat(serialIn);
-  httpCommand.concat(httpCommandS);
-  Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-  Serial.println(httpCommand);        // GET /about HTTP/1.1
-  Serial.println("");
-  // client.print("GET ");
-  client.println(httpCommand);
-  // client.print(" HTTP/1.1");
-  httpCommand = "";
-  client.print("Host: ");
-  client.println(server);
-  client.println("Connection: close");
-  client.println();
 }
 
 void serverReturn()
@@ -139,7 +46,8 @@ void serverReturn()
     if (printWebData)
     {
       Serial.write(buffer, len); // show in the serial monitor (slows some boards)
-      if(!client.available()){
+      if (!client.available())
+      {
         Serial.println("");
         Serial.println("Server disconnected");
       }
@@ -162,7 +70,12 @@ void getSerialIn()
     }
   }
 }
-void connectToEtherent(){
+void connectToEtherent()
+{
+  byte mac[] = {MAC}; // mac
+  IPAddress ip(IP);
+  IPAddress myDns(MYDNS);
+  int port = PORT;
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
@@ -191,7 +104,12 @@ void connectToEtherent(){
   // give the Ethernet shield a second to initialize:
   delay(1000);
 }
-void connectToServer(){
+void connectToServer()
+{
+
+  IPAddress server(SERVER); //目標server的ip
+
+  int port = PORT;
   Serial.print("connecting to ");
   Serial.print(server);
   Serial.println("...");
@@ -208,11 +126,10 @@ void connectToServer(){
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-  
 }
 void initGPIO()
 {
-  Ethernet.init(LAN_CS);    // MKR ETH Shield
+  Ethernet.init(LAN_CS); // MKR ETH Shield
 }
 void setup()
 {
@@ -234,7 +151,7 @@ void loop()
   if (stringComplete)
   { // serial輸入完成並印出
     serialIn.trim();
-    StoE(serialIn);
+    StoE(serialIn, client);
 
     // clear the string:
     serialIn = "";

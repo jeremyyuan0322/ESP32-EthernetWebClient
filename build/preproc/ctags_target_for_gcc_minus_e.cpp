@@ -5,100 +5,15 @@
 # 5 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 # 6 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 # 7 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
-IPAddress server(192, 168, 1, 56); //目標server的ip
-IPAddress ip(192, 168, 0, 74);
-IPAddress myDns(192, 168, 0, 1);
-int port = 3000;
 
 EthernetClient client;
-
 bool printWebData = true; // set to false for better speed measurement
 bool stringComplete = false; // Serial
+String serialIn; // Serial輸入的字串
 
-String httpCommand; // http command
-String serialIn;//Serial輸入的字串
-
-void debugStr(String str){
+void debugStr(String str)
+{
   Serial.println(str);
-}
-
-void checkConnect()
-{
-  // Serial.println(client.connected());
-  if (client.connected() == 0)
-  {
-    client.connect(server, port);
-  }
-  else
-  {
-    Serial.println("");
-    Serial.println("");
-    Serial.println("connected!!");
-  }
-}
-void disConnectClient()
-{
-  String reConnect = "/reconnect";
-  Serial.println();
-  client.stop();
-  Serial.println("disconnect.");
-  while (true)
-  {
-    Serial.println("enter \"/reconnect\" to connect server");
-    while (!Serial.available())
-    {
-    }
-    serialIn = Serial.readString();
-    serialIn.remove(serialIn.length() - 1, 1);
-    if (serialIn.compareTo(reConnect) == 0)
-    {
-      serialIn = "";
-      Serial.println("reconnected!!");
-      break;
-    }
-  }
-}
-void commandHint()
-{
-  String routerAbout = "/about";
-String routerName = "/name";
-String routerRoot = "/";
-String disconnect = "/end";
-  Serial.println("");
-  Serial.println("------------------------------------");
-  Serial.print("command: ");
-  Serial.print("[");
-  Serial.print(routerRoot);
-  Serial.print("] ");
-  Serial.print("[");
-  Serial.print(routerAbout);
-  Serial.print("] ");
-  Serial.print("[");
-  Serial.print(routerName);
-  Serial.print("] ");
-  Serial.print("[");
-  Serial.print(disconnect);
-  Serial.println("] ");
-}
-void sendHttpCommand()
-{
-  String httpCommandF = "GET ";
-String httpCommandS = " HTTP/1.1";
-  httpCommand.concat(httpCommandF);
-  httpCommand.concat(serialIn);
-  httpCommand.concat(httpCommandS);
-  Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
-  Serial.println(httpCommand); // GET /about HTTP/1.1
-  Serial.println("");
-  // client.print("GET ");
-  client.println(httpCommand);
-  // client.print(" HTTP/1.1");
-  httpCommand = "";
-  client.print("Host: ");
-  client.println(server);
-  client.println("Connection: close");
-  client.println();
 }
 
 void serverReturn()
@@ -113,7 +28,8 @@ void serverReturn()
     if (printWebData)
     {
       Serial.write(buffer, len); // show in the serial monitor (slows some boards)
-      if(!client.available()){
+      if (!client.available())
+      {
         Serial.println("");
         Serial.println("Server disconnected");
       }
@@ -136,7 +52,12 @@ void getSerialIn()
     }
   }
 }
-void connectToEtherent(){
+void connectToEtherent()
+{
+  byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
+  IPAddress ip(192, 168, 0, 74);
+  IPAddress myDns(8, 8, 8, 8);
+  int port = 3000;
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0) //板子嘗試用DHCP連網
   {
@@ -165,7 +86,12 @@ void connectToEtherent(){
   // give the Ethernet shield a second to initialize:
   delay(1000);
 }
-void connectToServer(){
+void connectToServer()
+{
+
+  IPAddress server(192, 168, 1, 56); //目標server的ip
+
+  int port = 3000;
   Serial.print("connecting to ");
   Serial.print(server);
   Serial.println("...");
@@ -182,7 +108,6 @@ void connectToServer(){
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-
 }
 void initGPIO()
 {
@@ -208,7 +133,7 @@ void loop()
   if (stringComplete)
   { // serial輸入完成並印出
     serialIn.trim();
-    StoE(serialIn);
+    StoE(serialIn, client);
 
     // clear the string:
     serialIn = "";
