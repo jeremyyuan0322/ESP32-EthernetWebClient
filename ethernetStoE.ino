@@ -80,18 +80,18 @@ void setup()
 
 void loop()
 {
-  debugStr(String(client.available()));
-  Serial.println(client.connected());
-  Serial.println(client.remoteIP());
+  // debugStr(String(client.available()));
+  // Serial.println(client.connected());
+  // Serial.println(client.remoteIP());
   if (!Serial.available()) // serial沒東西
   {
     Serial.println("Waiting for server......");
-    // while (!client.available()) //等待server回覆
-    // {
-      // client.setConnectionTimeout(5000);
-      // Serial.println("timeout");
-      // break;
-    // }
+    while (!client.available()) //等待server回覆
+    {
+      client.setConnectionTimeout(5000);
+      Serial.println("timeout");
+      break;
+    }
     
     Serial.println("Server return: ");
     int len = client.available();
