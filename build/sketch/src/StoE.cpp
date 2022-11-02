@@ -56,6 +56,7 @@ void sendHttpCommand(String serialIn, EthernetClient client)
   String httpCommandS = " HTTP/1.1";
   String httpCommand;       // http command
   checkConnect(client); //若server斷線則重連
+  // client.connect(server, 3000);//server重連
   httpCommand.concat(httpCommandF);
   httpCommand.concat(serialIn);
   httpCommand.concat(httpCommandS);
@@ -68,9 +69,10 @@ void sendHttpCommand(String serialIn, EthernetClient client)
   httpCommand = "";
   client.print("Host: ");
   client.println(server);
-  client.println("Connection: close");
+  // client.println("Connection: close");
   client.println();
   client.flush();
+  client.stop();
   delay(1500);
   Serial.println(client.available());
   Serial.println(client.connected());

@@ -23,7 +23,7 @@ void serverReturn()
     if(client.connected()==0){Serial.println("disconnect!!!!!!!!!!!");}
     }
   
-  
+
   int len = client.available();
   if (len > 0)
   {
@@ -37,6 +37,7 @@ void serverReturn()
       if (!client.available())
       {
         Serial.println("");
+        // client.stop();
         Serial.println("Server disconnected");
       }
     }
