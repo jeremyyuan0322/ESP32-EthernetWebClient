@@ -39,7 +39,8 @@ void StoE()
     httpCommand = "";
     client.println("Host: 192.168.1.56");
     client.println("Connection: close");
-    client.println();    
+    client.println();
+    Serial.println(serialIn);  
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
