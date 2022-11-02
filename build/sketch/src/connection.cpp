@@ -4,10 +4,10 @@
 // #include "StoE.h"
 #include "connection.h"
 #include "ethernetStoE.h"
-void checkConnect()
+void checkConnect(EthernetClient client, IPAddress server)
 {
-  EthernetClient client;
-  IPAddress server(SERVER); //要連的SERVER
+  // EthernetClient client;
+  // IPAddress server(SERVER); //要連的SERVER
   // Serial.println(client.connected());
   if (client.connected() == 0)
   {
@@ -25,11 +25,9 @@ void checkConnect()
     Serial.println("connected!!");
   }
 }
-void disConnectClient()
+void disConnectClient(EthernetClient client, String serialIn)
 {
-  String serialIn;
   String reconnect = "/reconnect";
-  EthernetClient client;
   Serial.println();
   client.stop();
   Serial.println("disconnect.");

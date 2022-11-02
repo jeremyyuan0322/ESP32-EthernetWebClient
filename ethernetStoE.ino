@@ -14,9 +14,9 @@ IPAddress server(SERVER); //要連的SERVER
 byte mac[] = {MAC};       // mac
 IPAddress ip(IP);
 IPAddress myDns(MYDNS);
-void debugStr()
+void debugStr(String str)
 {
-  Serial.println(client.available());
+  Serial.println(str);
 }
 void initGPIO()
 {
@@ -75,21 +75,24 @@ void setup()
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
-  StoE();
+  StoE(client, server);
 }
 
 void loop()
 {
-  debugStr();
+  debugStr(String(client.available()));
+  Serial.println(client.connected());
+  Serial.println(client.remoteIP());
   if (!Serial.available()) // serial沒東西
   {
     Serial.println("Waiting for server......");
-    while (!client.available()) //等待server回覆
-    {
-      // Serial.println(client.available());
-      // delay(3000);
+    // while (!client.available()) //等待server回覆
+    // {
+      // client.setConnectionTimeout(5000);
+      // Serial.println("timeout");
       // break;
-    }
+    // }
+    
     Serial.println("Server return: ");
     int len = client.available();
     if (len > 0)
@@ -107,6 +110,6 @@ void loop()
   if (client.available() == 0 && Serial.available() >= 0)
   {
     // server丟完了 且 Serial有東西輸入
-    StoE(); // serial輸入
+    StoE(client, server); // serial輸入
   }
 }

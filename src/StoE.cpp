@@ -3,9 +3,10 @@
 #include "StoE.h"
 #include "connection.h"
 #include "ethernetStoE.h"
-void StoE()
+String serialIn;
+void StoE(EthernetClient client, IPAddress server)
 {
-  EthernetClient client;
+  // extern EthernetClient client;
   String httpCommandF = "GET ";
   String httpCommandS = " HTTP/1.1";
   String httpCommand; // http command
@@ -13,10 +14,11 @@ void StoE()
   String routerName = "/name";
   String routerRoot = "/";
   String disconnect = "/end";
-  String serialIn;
-  IPAddress server(SERVER);//要連的SERVER
-  // checkConnect(); //若server斷線則重連
-  client.connect(server, PORT);
+  char ch;
+
+  // IPAddress server(SERVER);//要連的SERVER
+  checkConnect(client, server); //若server斷線則重連
+  // client.connect(server, PORT);
   Serial.println(client.connected());
   Serial.println("");
   Serial.println("enter a string");
@@ -24,7 +26,7 @@ void StoE()
   {
   }
   serialIn = Serial.readString();
-  serialIn.remove(serialIn.length() - 1, 1); //刪掉換行字元
+  serialIn.trim();
   if (serialIn.compareTo(routerAbout) == 0 || serialIn.compareTo(routerName) == 0 || serialIn.compareTo(routerRoot) == 0)
   { // command found
     httpCommand.concat(httpCommandF);
@@ -37,21 +39,22 @@ void StoE()
     // client.println(httpCommand);
     client.println(httpCommand);
     httpCommand = "";
-    client.println("Host: 192.168.1.56");
+    client.print("Host: ");
+    client.println(server);
     client.println("Connection: close");
     client.println();
-    Serial.println(serialIn);  
+    // Serial.println(client.available());    
   }
   else if (serialIn.compareTo(disconnect) == 0)
   {
-    disConnectClient();
-    StoE();
+    disConnectClient(client, serialIn);
+    StoE(client, server);
   }
   else
   { // command not found
     Serial.println("command not found");
     serialIn = "";
-    StoE();
+    StoE(client, server);
   }
   serialIn = "";
 }

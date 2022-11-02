@@ -1,4 +1,4 @@
 #ifndef STOE_H
 #define STOE_H
-void StoE();
+void StoE(EthernetClient client, IPAddress server);
 #endif
