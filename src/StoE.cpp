@@ -32,7 +32,7 @@ void StoE(EthernetClient client, IPAddress server)
     httpCommand.concat(httpCommandF);
     httpCommand.concat(serialIn);
     httpCommand.concat(httpCommandS);
-
+    Serial.println(server);
     Serial.print("Http Command: "); // GET /jeremy HTTP/1.1
     Serial.println(httpCommand);    // GET /about HTTP/1.1
     Serial.println("");
@@ -40,7 +40,8 @@ void StoE(EthernetClient client, IPAddress server)
     client.println(httpCommand);
     httpCommand = "";
     client.print("Host: ");
-    client.println(server);
+    client.print(server);
+    
     client.println("Connection: close");
     client.println();
     // Serial.println(client.available());    
