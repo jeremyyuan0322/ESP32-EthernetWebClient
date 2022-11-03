@@ -10,20 +10,18 @@ bool printWebData = true;    // set to false for better speed measurement
 bool stringComplete = false; // Serial
 String serialIn; // Serial輸入的字串
 
-void debugStr(String str)
+void debugStr(char *str)
 {
   Serial.println(str);
 }
 
 void serverReturn()
 {
-  if(client.available()>0){
-    Serial.println("");
-    Serial.println("server buf has data!!!!!!!!!!!");
-    if(client.connected()==0){Serial.println("disconnect!!!!!!!!!!!");}
-    }
-  
-
+  // if(client.available()>0){
+  //   Serial.println("");
+  //   Serial.println("server buf has data!!!!!!!!!!!");
+  //   if(client.connected()==0){Serial.println("disconnect!!!!!!!!!!!");}
+  //   }
   int len = client.available();
   if (len > 0)
   {
@@ -122,6 +120,7 @@ void initGPIO()
 }
 void setup()
 {
+  debugStr("start");
   initGPIO();
   Serial.begin(115200);
   serialIn.reserve(200);

@@ -38,6 +38,7 @@ void serverReturn()
       if (!client.available())
       {
         Serial.println("");
+        // client.stop();
         Serial.println("Server disconnected");
       }
     }

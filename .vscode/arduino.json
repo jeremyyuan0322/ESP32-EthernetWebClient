@@ -3,5 +3,5 @@
     "board": "esp32:esp32:esp32",
     "sketch": "ethernetStoE.ino",
     "output": "build",
-    "port": "/dev/tty.usbserial-14110"
+    "port": "/dev/tty.Bluetooth-Incoming-Port"
 }
