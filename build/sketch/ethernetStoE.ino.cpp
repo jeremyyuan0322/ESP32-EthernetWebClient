@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#line 1 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 1 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
 #include <SPI.h>
 #include <Ethernet.h>
 #include <string.h>
@@ -37,15 +37,15 @@ void getSerialIn();
 void connectToEthernet();
 void connectToServer();
 
-#line 168 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 168 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void connectToEtherent();
-#line 216 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 216 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void initGPIO();
-#line 220 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 220 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void setup();
-#line 231 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 231 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void loop();
-#line 38 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
+#line 38 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
 void debugStr(String str){
   Serial.println(str);
 }

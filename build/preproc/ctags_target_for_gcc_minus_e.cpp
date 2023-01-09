@@ -1,9 +1,9 @@
-# 1 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino"
-# 2 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-# 3 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-# 4 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-# 5 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
-# 6 "/Users/jeremyyuan/Documents/git/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 1 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino"
+# 2 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 3 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 4 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 5 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
+# 6 "/Users/uj/Documents/jeremy/vscode/matrix310/Matrix-310-EthernetStoE/ethernetStoE.ino" 2
 // #include "./src/print.h"
 byte mac[] = {0x98, 0xf4, 0xab, 0x17, 0x24, 0xc4}; // mac
 IPAddress server(192, 168, 1, 56); //目標server的ip
